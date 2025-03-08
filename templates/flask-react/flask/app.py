@@ -7,7 +7,6 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# Configuring PostgreSQL database
 DATABASE_CONFIG = {
     'dbname': 'postgres',
     'user': 'postgres',
@@ -15,7 +14,6 @@ DATABASE_CONFIG = {
     'host': 'localhost',
     'port': '5432'
 }
-
 
 def get_db_connection():
     return psycopg2.connect(**DATABASE_CONFIG, cursor_factory=RealDictCursor)
