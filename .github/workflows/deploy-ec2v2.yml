@@ -58,7 +58,7 @@ jobs:
             sudo usermod -aG docker $USER
 
             # Pull Docker Images
-            docker pull ${{ secrets.DOCKER_USERNAME }}/flask-backend:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/flask-backend:latest
             docker pull ${{ secrets.DOCKER_USERNAME }}/react-frontend:latest
 
             # Stop and remove old containers
@@ -74,3 +74,10 @@ jobs:
             docker run -d -p 80:80 --name react-frontend ${{ secrets.DOCKER_USERNAME }}/react-frontend:latest
 
             echo "Deployment Successful!"
+
+
+#declare docker build and push
+
+#declare remote state terraform
+#dynamodb - jeremytable-assignment3 / partion key: ID
+#s3 bucket  manually* - jeremybucket-assignment3
