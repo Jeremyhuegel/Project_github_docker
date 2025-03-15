@@ -1,0 +1,76 @@
+name: Terraform Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: "us-east-1"
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      - name: Get EC2 Public IP
+        run: |
+          cd terraform
+          echo "EC2_PUBLIC_IP=$(terraform output -raw public_ip)" >> $GITHUB_ENV
+
+  deploy:
+    name: Deploy App on EC2
+    needs: terraform
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: SSH into EC2 and Deploy Containers
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.EC2_PUBLIC_IP }}
+          username: ec2-user  
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            # Install Docker
+            sudo apt update -y && sudo apt install -y docker.io
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo usermod -aG docker $USER
+
+            # Pull Docker Images
+            docker pull ${{ secrets.DOCKER_USERNAME }}/flask-backend:latest
+            docker pull ${{ secrets.DOCKER_USERNAME }}/react-frontend:latest
+
+            # Stop and remove old containers
+            docker stop flask-backend || true
+            docker stop react-frontend || true
+            docker rm flask-backend || true
+            docker rm react-frontend || true
+
+            # Run Flask Backend
+            docker run -d -p 5500:5500 --name flask-backend ${{ secrets.DOCKER_USERNAME }}/flask-backend:latest
+
+            # Run React Frontend (Served via Nginx)
+            docker run -d -p 80:80 --name react-frontend ${{ secrets.DOCKER_USERNAME }}/react-frontend:latest
+
+            echo "Deployment Successful!"
