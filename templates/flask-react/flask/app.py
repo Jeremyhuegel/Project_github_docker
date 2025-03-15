@@ -8,11 +8,11 @@ app = Flask(__name__)
 CORS(app)
 
 DATABASE_CONFIG = {
-    'dbname': 'postgres',
-    'user': 'postgres',
-    'password': 'postgres',
-    'host': 'localhost',
-    'port': '5432'
+    'dbname': os.environ.get('DB_NAME', 'postgres'),
+    'user': os.environ.get('DB_USER', 'postgres'),
+    'password': os.environ.get('DB_PASSWORD', 'postgres'),
+    'host': os.environ.get('DB_HOST', 'localhost'),
+    'port': os.environ.get('DB_PORT', '5432')
 }
 
 def get_db_connection():
@@ -130,4 +130,4 @@ def bad_request(error):
 
 if __name__ == '__main__':
     init_movie_db()
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host='0.0.0.0', port=5500)
