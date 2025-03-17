@@ -22,8 +22,13 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/jeremyhuegel/flask-backend .
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/jeremyhuegel/flask-backend
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend ./flask
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
+      
+    - name: Build and push Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend ./nginx
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
 
     - name: Deploy to AWS EC2
       uses: appleboy/ssh-action@master
@@ -34,13 +39,8 @@ jobs:
         script: |
           docker stop flask-react-container || true
           docker rm flask-react-container || true
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-react-app
-          docker run -d -p 80:80 --name flask-react-container --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-react-app
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
 
-
-
-#declare docker build and push
-
-#declare remote state terraform
-#dynamodb - jeremytable-assignment3 / partion key: ID
-#s3 bucket  manually* - jeremybucket-assignment3
+          docker run -d -p 5500:5500 --name flask-backend --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
+          docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
