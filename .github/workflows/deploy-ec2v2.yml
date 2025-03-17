@@ -13,6 +13,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Debug - List Repository Files
+      run: ls -la
+    
+
     - name: Log in to DockerHub
       run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
