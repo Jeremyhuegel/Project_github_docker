@@ -53,5 +53,8 @@ docker push jeremyhuegel/flask-backend:1.0
 
 ---
 
+
+![MovieDB Diagram](https://github.com/user-attachments/assets/7603c438-0f1c-4384-8942-dba55b491617)
+
 💡 *For any issues, check GitHub Actions logs and AWS console for troubleshooting.*
 
