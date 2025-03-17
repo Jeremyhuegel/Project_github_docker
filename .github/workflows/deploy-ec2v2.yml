@@ -22,12 +22,12 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend ./flask
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend 
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
       
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend ./nginx
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend 
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
 
     - name: Deploy to AWS EC2
