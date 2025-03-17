@@ -22,8 +22,8 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-react-app .
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/flask-react-app
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/jeremyhuegel/flask-backend .
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/jeremyhuegel/flask-backend
 
     - name: Deploy to AWS EC2
       uses: appleboy/ssh-action@master
