@@ -20,29 +20,42 @@ jobs:
     - name: Log in to DockerHub
       run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
-    - name: Build and push Docker image
-      run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend ./jeremyhuegel
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
+
+    - name: Pull Docker image from Docker Hub
+      run: docker pull jeremyhuegel/flask-backend:1.0
+    
+    - name: Pull Docker image from Docker Hub
+      run: docker pull jeremyhuegel/nginx-backend:1.0
+
+    - name: Run Docker Container
+      run: docker run -d -p 5500:5500 --name flask-backend --restart always jeremyhuegel/flask-backend:1.0
+    
+    - name: Run Docker Container
+      run: docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend jeremyhuegel/nginx-backend:1.0
+    
+    # - name: Build and push Docker image
+    #   run: |
+    #     docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend ./jeremyhuegel
+    #     docker push ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
       
-    - name: Build and push Docker image
-      run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend ./jeremyhuegel
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
+    # - name: Build and push Docker image
+    #   run: |
+    #     docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend ./jeremyhuegel
+    #     docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
 
-    - name: Deploy to AWS EC2
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ubuntu
-        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        script: |
-          docker stop flask-backend || true
-          docker rm flask-backend || true
-          docker stop nginx-backend || true
-          docker rm nginx-backend || true
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
+    # - name: Deploy to AWS EC2
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.EC2_HOST }}
+    #     username: ubuntu
+    #     key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+    #     script: |
+    #       docker stop flask-backend || true
+    #       docker rm flask-backend || true
+    #       docker stop nginx-backend || true
+    #       docker rm nginx-backend || true
+    #       docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
+    #       docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
 
-          docker run -d -p 5500:5500 --name flask-backend --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
-          docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
+    #       docker run -d -p 5500:5500 --name flask-backend --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
+    #       docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
