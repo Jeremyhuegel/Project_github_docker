@@ -83,14 +83,14 @@ jobs:
         source: "./templates/flask-react/nginx/default.conf"
         target: "/home/ubuntu/nginx/default.conf"
 
-    - name: copy files to server using SCP
+    - name: copy files to server using SCP 4
       uses: appleboy/scp-action@master
       with:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           port: 22
-          source: "./template/flask-react/flask/Dockerfile"
+          source: "./templates/flask-react/flask/Dockerfile"
           target: "/home/ubuntu/flask-react/Dockerfile"
 
 
