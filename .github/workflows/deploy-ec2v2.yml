@@ -46,6 +46,13 @@ jobs:
     #     docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend ./jeremyhuegel
     #     docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
 
+    - name: Debug
+      continue-on-error: true
+      run: |
+        pwd
+        ls -lah
+    
+    
     - name: copy files to server using SCP 1
       uses: appleboy/scp-action@master
       with:
