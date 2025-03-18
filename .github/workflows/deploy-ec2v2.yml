@@ -36,28 +36,65 @@ jobs:
         ls -lah
     
   
-    - name: Copy files to server using SCP alternative (rsync)
-      run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./templates/flask-react/docker-compose.yml ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/templates/docker-compose.yml
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./templates/flask-react/nginx/Dockerfile ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/templates/nginx/Dockerfile
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./templates/flask-react/nginx/default.conf ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/templates/nginx/default.conf
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no" ./templates/flask-react/flask/Dockerfile ubuntu@${{ secrets.EC2_HOST }}:/home/ubuntu/templates/flask/Dockerfile
-      
-    - name: Deploy to AWS EC2 using SSH
-      run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /home/ubuntu/templates  
-      
-            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-            
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:latest
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
-            
-            docker-compose up -d
-          EOF
+    # - name: copy files to server using SCP 1
+    #   uses: appleboy/scp-action@master
+    #   with:
+    #     host: ${{ secrets.EC2_HOST }}
+    #     username: ubuntu
+    #     key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+    #     port: 22
+    #     source: "./templates/flask-react/docker-compose.yml"
+    #     target: "/home/ubuntu/templates/docker-compose.yml"
+
+    - name: copy files to server using SCP 2
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./templates/flask-react/nginx/Dockerfile"
+        target: "/home/ubuntu/templates/nginx/Dockerfile"
+
+    - name: copy files to server using SCP 3
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        port: 22
+        source: "./templates/flask-react/nginx/default.conf"
+        target: "/home/ubuntu/templates/nginx/default.conf"
+
+    - name: copy files to server using SCP 4
+      uses: appleboy/scp-action@master
+      with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          port: 22
+          source: "./templates/flask-react/flask/Dockerfile"
+          target: "/home/ubuntu/templates/flask/Dockerfile"
+
+
+
+    - name: Deploy to AWS EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ubuntu
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          cd /home/ubuntu/templates  
+        
+          echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:latest
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
+ 
+          
+          docker-compose up -d
           
         
 # docker stop jeremyhuegel/flask-backend:latest
