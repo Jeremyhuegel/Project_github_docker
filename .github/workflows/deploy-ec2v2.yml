@@ -61,13 +61,18 @@ jobs:
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:1.0
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
  
-          docker-compose up -d
-          docker-compose down
-
-# docker run -d -p 5500:5500 --name flask-backend --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:1.0
-# docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
+        
+          docker stop flask-backend
+          docker stop nginx-backend
+          
+          docker run -d -p 5500:5500 --name flask-backend --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:1.0
+          docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
 
 
   #Log into EC2 First
   #w/ docker login script
   #Pull images
+
+
+  # docker-compose up -d
+  # docker-compose down
