@@ -50,10 +50,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
-          docker stop flask-backend || true
-          docker rm flask-backend || true
-          docker stop nginx-backend || true
-          docker rm nginx-backend || true
+          
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
 
