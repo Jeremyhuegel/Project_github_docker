@@ -8,10 +8,10 @@ app = Flask(__name__)
 CORS(app)
 
 DATABASE_CONFIG = {
-    'dbname': os.environ.get('DB_NAME', 'postgres'),
+    'dbname': os.environ.get('DB_NAME', 'movies_db'),
     'user': os.environ.get('DB_USER', 'postgres'),
     'password': os.environ.get('DB_PASSWORD', 'postgres'),
-    'host': os.environ.get('DB_HOST', 'localhost'),
+    'host': os.environ.get('DB_HOST', 'db'),
     'port': os.environ.get('DB_PORT', '5432')
 }
 
