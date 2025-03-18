@@ -29,10 +29,6 @@ jobs:
     - name: Pull Docker image from Docker Hub
       run: docker pull jeremyhuegel/nginx-backend:1.0
 
-    - name: Docker compose down
-      run: docker compose down  
-    - name: Docker compose up
-      run: docker compose up -d
     
     # - name: Run Docker Container
     #   run: docker run -d -p 5500:5500 --name flask-backend --restart always jeremyhuegel/flask-backend:1.0
@@ -57,14 +53,19 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
+          
+        
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
 
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:1.0
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
+ 
+          docker-compose up -d
+          docker-compose down
 
-          docker run -d -p 5500:5500 --name flask-backend --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:1.0
-          docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
+# docker run -d -p 5500:5500 --name flask-backend --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:1.0
+# docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
 
 
   #Log into EC2 First
