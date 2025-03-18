@@ -29,30 +29,13 @@ jobs:
     - name: Pull Docker image from Docker Hub
       run: docker pull jeremyhuegel/nginx-backend:1.0
 
-    
-    # - name: Run Docker Container
-    #   run: docker run -d -p 5500:5500 --name flask-backend --restart always jeremyhuegel/flask-backend:1.0
-    
-    # - name: Run Docker Container
-    #   run: docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend jeremyhuegel/nginx-backend:1.0
-    
-    # - name: Build and push Docker image
-    #   run: |
-    #     docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend ./jeremyhuegel
-    #     docker push ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend
-      
-    # - name: Build and push Docker image
-    #   run: |
-    #     docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend ./jeremyhuegel
-    #     docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend
-
     - name: Debug
       continue-on-error: true
       run: |
         pwd
         ls -lah
     
-    
+  
     - name: copy files to server using SCP 1
       uses: appleboy/scp-action@master
       with:
@@ -110,7 +93,7 @@ jobs:
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:latest
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
  
-          docker-compose down
+          
           docker-compose up -d
           
         
@@ -123,5 +106,6 @@ jobs:
 # docker run -d -p 5500:5500 --name flask-backend --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:latest
 # docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
 
-
+#docker-compose down
+#docker-compose up -d
 
