@@ -93,17 +93,18 @@ jobs:
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:latest
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
  
+          docker-compose down
+          docker-compose up -d
+          
         
-          docker stop jeremyhuegel/flask-backend:latest
-          docker stop jeremyhuegel/nginx-backend:1.0
+# docker stop jeremyhuegel/flask-backend:latest
+# docker stop jeremyhuegel/nginx-backend:1.0
 
-          docker rm jeremyhuegel/flask-backend:latest
-          docker rm jeremyhuegel/nginx-backend:1.0
+# docker rm jeremyhuegel/flask-backend:latest
+# docker rm jeremyhuegel/nginx-backend:1.0
 
-          docker run -d -p 5500:5500 --name flask-backend --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:latest
-          docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
+# docker run -d -p 5500:5500 --name flask-backend --restart always ${{ secrets.DOCKERHUB_USERNAME }}/flask-backend:latest
+# docker run -d -p 80:80 --name nginx-backend --restart always --link flask-backend ${{ secrets.DOCKERHUB_USERNAME }}/nginx-backend:1.0
 
 
-#scp docker files
-#scp default.conf
-#scp docker-compose.yml
+
