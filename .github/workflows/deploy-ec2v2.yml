@@ -43,7 +43,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         port: 22
-        source: "./flask-react/docker-compose.yml"
+        source: "./templates/flask-react/docker-compose.yml"
         target: "/home/ubuntu/templates/docker-compose.yml"
 
     - name: copy files to server using SCP 2
