@@ -60,7 +60,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         port: 22
-        source: "docker-compose.yml/*"
+        source: "./template/flask-react/docker-compose.yml/*"
         target: "/home/ubuntu/docker-compose.yml"
 
     - name: copy files to server using SCP 2
@@ -70,7 +70,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         port: 22
-        source: "./nginx/Dockerfile"
+        source: "./template/flask-react/nginx/Dockerfile"
         target: "/home/ubuntu/nginx/Dockerfile"
 
     - name: copy files to server using SCP 3
@@ -80,7 +80,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         port: 22
-        source: "./nginx/default.conf"
+        source: "./template/flask-react/nginx/default.conf"
         target: "/home/ubuntu/nginx/default.conf"
 
     - name: copy files to server using SCP
@@ -90,7 +90,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           port: 22
-          source: "./flask-react /Dockerfile"
+          source: "./template/flask-react/flask/Dockerfile"
           target: "/home/ubuntu/flask-react/Dockerfile"
 
 
